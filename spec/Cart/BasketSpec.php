@@ -3,29 +3,27 @@
 namespace spec\Cart;
 
 use Cart\Basket;
+use Cart\Product;
+use Cart\Catalog;
 use PhpSpec\ObjectBehavior;
 
 class BasketSpec extends ObjectBehavior
 {
-    private $products = [];
-
-    public function __construct(array $products)
+    function let()
     {
-        $this->products = array_reduce($products, function($array, $product)
-        {
-            $array[$product->productCode()] = $product;
-            return $array;
-        }, []);
-    }
 
-    public function find($productCode)
+        $this->beConstructWith(
+            new Catalog([
+                new Product('1001', 'Photography', 200),
+                new Product('1002', 'Floorpaln', 100),
+                new Product('1003', 'Gas Cirtificates', 83.50),
+                new Product('1004', 'EICR Certificates', 51.00)
+            ])
+        );      
+    }
+    
+    function it_is_initializable()
     {
-        if(! isset($this->products[$productCode]))
-        {
-            throw new ProductNotFoundInCatalogException;
-
-        }
-
-        return $this->products[$productCode];
-    }
+        $this->shouldHaveType(Basket::class);
+    }   
 }
